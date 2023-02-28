@@ -18,7 +18,6 @@ class UserService {
       password: hashedPassword,
       activationLink,
     };
-    console.log(newUser)
     const createdUser = await UserModel.create(newUser);
     const userDto = new UserDto(createdUser);
     const jwtToken = tokenService.generateTokens({...userDto});
