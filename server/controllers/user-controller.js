@@ -8,7 +8,7 @@ class UserController {
       res.cookie('refreshToken', userData.refreshToken, { httpOnly: true, maxAge: 15 * 24 * 60 * 60 * 1000 });
       res.status(201).json(userData);
     } catch(error) {
-      res.status(500).json({error: error.message});
+      next(error);
     }
   }
 
@@ -16,7 +16,7 @@ class UserController {
     try {
 
     } catch(error) {
-
+      next(error);
     }
   }
 
@@ -24,7 +24,7 @@ class UserController {
     try {
 
     } catch(error) {
-
+      next(error);
     }
   }
 
@@ -34,7 +34,7 @@ class UserController {
       await userService.activation(activationLink);
       res.redirect(process.env.CLIENT_URL);
     } catch(error) {
-      res.status(500).json({error: error.message});
+      next(error);
     }
   }
 
@@ -42,7 +42,7 @@ class UserController {
     try {
 
     } catch(error) {
-
+      next(error);
     }
   }
 
@@ -50,7 +50,7 @@ class UserController {
     try {
 
     } catch(error) {
-
+      next(error);
     }
   }
 }
