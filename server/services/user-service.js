@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const uuid = require('uuid');
 const tokenService = require('./token-service');
 const UserDto = require('./../dtos/user-dto');
+const mailService = require('./mail-service');
 
 class UserService {
   async registration(name, email, password) {
@@ -20,12 +21,22 @@ class UserService {
     };
     const createdUser = await UserModel.create(newUser);
     const userDto = new UserDto(createdUser);
+    await mailService.sendActivationMail(userDto.email, `${process.env.SERVICE_URL}/api/activate/${activationLink}`);
     const jwtToken = tokenService.generateTokens({...userDto});
     await tokenService.saveToken(userDto.id, jwtToken.refreshToken);
     return {
       ...jwtToken,
       user: userDto,
     }
+  }
+
+  async activation(activationLink) {
+    const user = await UserModel.findOne({activationLink});
+    if (!user) {
+      throw new Error(`Некорректная ссылка активации`);
+    }
+    user.isActivated = true;
+    await user.save();
   }
 }
 
